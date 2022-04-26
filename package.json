@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js",
+    "start": "set NODE_ENV=production && node src/index.js && npx sequelize db:migrate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Olayinka Olaosebikan",
@@ -18,5 +18,8 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.19.0",
     "sequelize-cli": "^6.4.1"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0"
   }
 }
