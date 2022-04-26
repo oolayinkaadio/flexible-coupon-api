@@ -7,7 +7,6 @@ module.exports = {
   //   operatorsAliases: false
   // },
   development: {
-    use_env_variable: 'production',
     username: process.env.DATABASE_USERNAME,
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
