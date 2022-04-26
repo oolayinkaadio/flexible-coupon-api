@@ -1,5 +1,5 @@
 const express = require('express');
-const morgan = require('morgan');
+const logger = require('morgan');
 
 const router = require('./routes/index');
 const { errorResponse, statusCodes, successResponse, messages } = require('./utils');
@@ -7,7 +7,8 @@ const { errorResponse, statusCodes, successResponse, messages } = require('./uti
 const app = express();
 
 app.use(express.json());
-app.use(morgan(':method :url :response-time'));
+
+app.use(logger('dev'));
 
 const port = process.env.PORT || 4200;
 
