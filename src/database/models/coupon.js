@@ -1,6 +1,5 @@
 'use strict';
-
-import { Model, UUIDV4 } from 'sequelize';
+const { Model, UUIDV4 } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Coupon extends Model {
@@ -13,13 +12,14 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.belongsToMany(models.Rule, {
         foreignKey: 'coupon_id',
-        as: 'coupon',
+        as: 'rules',
         through: 'CouponRule'
       });
 
-      this.belongsTo(models.Discount, {
-        foreignKey: 'id',
-        as: 'coupon'
+      this.belongsToMany(models.Discount, {
+        foreignKey: 'coupon_id',
+        as: 'discounts',
+        through: 'CouponDiscount'
       });
     }
   }
@@ -38,7 +38,11 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false
-    }
+    },
+    coupon_code: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
   }, {
     sequelize,
     paranoid: true,

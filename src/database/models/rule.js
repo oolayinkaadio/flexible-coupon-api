@@ -1,6 +1,6 @@
 'use strict';
 
-import { Model, UUIDV4 } from 'sequelize';
+const { Model, UUIDV4 } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Rule extends Model {
@@ -11,9 +11,9 @@ module.exports = (sequelize, DataTypes) => {
     */
 
     static associate(models) {
-      this.belongsToMany(models.Rule, {
+      this.belongsToMany(models.Coupon, {
         foreignKey: 'rule_id',
-        as: 'rule',
+        as: 'rules',
         through: 'CouponRule'
       });
     }

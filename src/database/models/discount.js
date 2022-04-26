@@ -1,6 +1,6 @@
 'use strict';
 
-import { Model, UUIDV4 } from 'sequelize';
+const { Model, UUIDV4 } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Discount extends Model {
@@ -11,9 +11,15 @@ module.exports = (sequelize, DataTypes) => {
     */
 
     static associate(models) {
-      this.hasMany(models.Discount, {
+      this.hasMany(models.Coupon, {
         foreignKey: 'id',
         as: 'discount',
+      });
+
+      this.belongsToMany(models.Coupon, {
+        foreignKey: 'discount_id',
+        as: 'discounts',
+        through: 'CouponDiscount'
       });
     }
   }
@@ -39,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     type: {
       type: DataTypes.ENUM,
-      value: ['percentage', 'fixed_price', 'both'],
+      values: ['percentage', 'fixed_price', 'both'],
       allowNull: false
     }
   }, {

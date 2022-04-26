@@ -3,7 +3,7 @@
 const { Model, UUIDV4 } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class CouponRule extends Model {
+  class CouponDiscount extends Model {
     /**
     * Helper method for defining associations.
     * This method is not a part of Sequelize lifecycle.
@@ -13,17 +13,17 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.hasMany(models.Coupon, {
         foreignKey: 'id',
-        as: 'coupon'
+        as: 'discount'
       });
 
-      this.hasMany(models.Rule, {
+      this.hasMany(models.Discount, {
         foreignKey: 'id',
-        as: 'rule'
+        as: 'coupon_discount'
       });
     }
   }
   
-  CouponRule.init({
+  CouponDiscount.init({
     id: {
       type: DataTypes.UUID,
       defaultValue: UUIDV4,
@@ -34,12 +34,20 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       autoIncrement: true
     },
+    coupon_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    discount_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    }   
   }, {
     sequelize,
     paranoid: true,
-    modelName: 'CouponRule',
+    modelName: 'CouponDiscount',
     freezeTableName: true
   });
 
-  return CouponRule;
+  return CouponDiscount;
 }; 
