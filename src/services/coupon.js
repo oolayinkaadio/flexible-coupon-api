@@ -91,7 +91,7 @@ const couponService = {
 
   getAllCoupon: async (res) => {
     try {
-      const allCoupon = await discountDal.getAllCoupon();
+      const allCoupon = await couponDal.getAllCoupons();
       if (!allCoupon) {
         return errorResponse(res, statusCodes.badRequest, messages.badRequest);
       }

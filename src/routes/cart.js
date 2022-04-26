@@ -16,7 +16,7 @@ const express = require('express');
 
 const cartRouter = express.Router();
 
-cartRouter.post('/cart/add-product', cartValidator.validateAddProductToCart, addProductToCart);
+cartRouter.post('/add-to-cart', cartValidator.validateAddProductToCart, addProductToCart);
 cartRouter.post('/coupon', cartValidator.validateGetCartDiscount, getCartDiscount);
 cartRouter.get('/cart', cartValidator.validateCartId, getCartAndItsProductsTotalPrice);
 // cartRouter.get('/:id', validateReqParamsId, cartValidator.validateUpdateCart, getCartById);

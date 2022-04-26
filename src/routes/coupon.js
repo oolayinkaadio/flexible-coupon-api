@@ -17,8 +17,8 @@ const express = require('express');
 const couponRouter = express.Router();
 
 couponRouter.post('/create', couponValidator.validateCreateCoupon, createCoupon);
-couponRouter.get('/:id', validateReqParamsId, couponValidator.validateUpdateCoupon, getCouponById);
 couponRouter.get('/all', getAllCoupons);
+couponRouter.get('/:id', validateReqParamsId, couponValidator.validateUpdateCoupon, getCouponById);
 couponRouter.patch('/update/:id', validateReqParamsId, updateCoupon);
 couponRouter.delete('/delete/:id', validateReqParamsId, deleteCouponById);
 

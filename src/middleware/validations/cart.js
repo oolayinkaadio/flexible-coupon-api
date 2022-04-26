@@ -30,7 +30,7 @@ const cartValidator = {
     const payload = req.body;
 
     const schema = Joi.object().keys({
-      coupon_code: Joi.string().max(1).required(),
+      coupon_code: Joi.string().required(),
       cart_id: Joi.string().guid({ version: ['uuidv4', 'uuidv5'] }).required(),
     });
 

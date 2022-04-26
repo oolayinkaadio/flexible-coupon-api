@@ -1,7 +1,9 @@
-const {cartDal, productDal, cartProductDal, db } = require('../dal');
+const { cartDal, productDal, cartProductDal,couponDal, db } = require('../dal');
+
 
 const {
-  successResponseWithData, successResponse, errorResponseWithData, errorResponse, generateCouponCode, messages, statusCodes
+  successResponseWithData, successResponse, errorResponseWithData, errorResponse, generateCouponCode,
+  messages, statusCodes, calculateCartTotalPrice
 } = require('../utils');
  
 const cartService = {
@@ -9,13 +11,14 @@ const cartService = {
     try {
       const { productIds } = data;
 
-     return await db.sequelize.transaction(async transaction => {
+      let cart_id;
+     await db.sequelize.transaction(async transaction => {
         const createCart = await cartDal.createCart(transaction);
         if (!createCart) {
           return errorResponse(res, statusCodes.badRequest, messages.badRequest);
         };
 
-        const { id: cart_id } = createCart;
+        cart_id  = createCart.id;
 
         const getProducts = await productDal.getProductsByArrayOfIds(productIds, transaction); 
 
@@ -23,59 +26,46 @@ const cartService = {
           return errorResponse(res, statusCodes.badRequest, messages.badRequest);
         };
 
-        const cartProductIds = createProducts.map(product => {
+       const cartProductIds = getProducts.map(product => {
           return {product_id: product.id, cart_id};
         });
 
-        const createCartProductRecord = await cartProductDal.createCartProductRecord(productIds, transaction);
+        const createCartProductRecord = await cartProductDal.createCartProductRecord(cartProductIds, transaction);
         if(!createCartProductRecord) { return errorResponse(res, statusCodes.badRequest, messages.badRequest); }
-
-        const getNewCartAndItsProducts = await cartDal.getCartById(cart_id);
-        if (!getNewCartAndItsProducts) {
-          return errorResponse(res, statusCodes.badRequest, messages.badRequest);
-        }
-
-        return successResponseWithData(res, statusCodes.success, messages.success, getNewCartAndItsProducts);
-
-      });
+     });
+      
+      
+     const getNewCartAndItsProducts = await cartDal.getCartById(cart_id);
+     if (!getNewCartAndItsProducts) {
+       return errorResponse(res, statusCodes.badRequest, messages.badRequest);
+     }
+     return successResponseWithData(res, statusCodes.success, messages.success, getNewCartAndItsProducts);
 
     } catch (error) {
       throw new Error(error);
     }
   },
 
-  calculateCartTotalPrice: async (cartProducts) => {
-    let totalPrice = 0;
-
-    if (cartProducts && cartProducts.length > 0) {
-      totalPrice = cartProducts.reduce((a,b) => a.price + b.price);
-    };
-
-    return totalPrice;
-  },
-
   getCartAndItsProductsTotalPrice: async (cart_id, res) => {
-    const getCartAndItsProducts = await cartDal.getCartById(cart_id);
-    if (!getCartAndItsProducts) {
-      return errorResponse(res, statusCodes.badRequest, messages.badRequest);
-    };
-
-    let totalPrice = 0;
-    if (getCartAndItsProducts && getCartAndItsProducts.products.length > 0) {
-      totalPrice += this.calculateCartTotalPrice(products);
-    }
-
-    // const { products } = getCartAndItsProducts;
-
-    // let totalPrice = 0;
-
-    // if (products && products.length > 0) {
-    //   totalPrice = products.reduce((a,b) => a.price + b.price);
-    // };
-
-    getCartAndItsProducts.totalPrice = totalPrice;
-
-    return successResponseWithData(res, statusCodes.success, messages.success, getCartAndItsProducts);
+    try {
+      const getCartAndItsProducts = await cartDal.getCartById(cart_id);
+      if (!getCartAndItsProducts) {
+        return errorResponse(res, statusCodes.badRequest, messages.badRequest);
+      };
+      
+      let totalPrice = 0;
+      if (getCartAndItsProducts && getCartAndItsProducts.products.length > 0) {
+        const { products } = getCartAndItsProducts;
+        totalPrice += calculateCartTotalPrice(products);
+      }
+  
+      const returnedData = {cart: getCartAndItsProducts, cartTotalPrice: totalPrice};
+  
+      return successResponseWithData(res, statusCodes.success, messages.success, returnedData);
+  } catch (error) {
+    throw new Error(error);
+  }
+    
   },
 
   calculateDiscountForCart: async (data, res) => {
@@ -89,7 +79,7 @@ const cartService = {
 
       const { products } = getCartAndItsProducts;
       const cartProductLength = products.length;
-      const cartTotalPrice = this.calculateCartTotalPrice(products);
+      const cartTotalPrice = calculateCartTotalPrice(products);
 
       const couponCodeExists = await couponDal.getCouponByField({coupon_code});
       if (!couponCodeExists) {

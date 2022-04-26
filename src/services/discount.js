@@ -14,7 +14,7 @@ const discountService = {
       const {name} = data;
 
       const discountExists = await discountDal.getDiscountByField({ name });
-      console.log(discountExists);
+      
       if (discountExists && discountExists.length > 0) {
         return errorResponse(res, statusCodes.conflict, messages.conflict);
       };

@@ -13,7 +13,6 @@ const productDal = {
   getProductById: async (id) => {
     return await Product.findOne({
       where: { id },
-      include: [{model: Cart, as: 'cart'}]
     });
   },
 

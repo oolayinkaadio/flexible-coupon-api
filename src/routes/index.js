@@ -11,7 +11,7 @@ const router = express.Router();
 router.use('/coupon', couponRouter);
 router.use('/discount', discountRouter);
 router.use('/rule', ruleRouter);
-router.use('/cart', cartRouter);
+router.use('/', cartRouter);
 router.use('/product', productRouter);
 
 module.exports = router;

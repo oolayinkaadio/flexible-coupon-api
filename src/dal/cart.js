@@ -1,4 +1,4 @@
-const {Cart, Product} = require('../database/models');
+const {Cart, Product, CartProduct} = require('../database/models');
 
 const cartDal = {
   createCart: async (transaction) => {
@@ -14,7 +14,8 @@ const cartDal = {
       where: { id },
       include: [{
         model: Product,
-        as: 'products'
+        as: 'products',
+        through: CartProduct
       }]
     });
   },
@@ -24,4 +25,4 @@ const cartDal = {
   }
 };
 
-module.exports = cartDal;
+module.exports = {cartDal};

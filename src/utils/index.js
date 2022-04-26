@@ -3,7 +3,8 @@ const {
   successResponseWithData
 } =require('./apiResPonse');
 const { messages } = require('./messages');
-const {generateCouponCode} = require('./generateCouponCode');
+const { generateCouponCode } = require('./generateCouponCode');
+const {calculateCartTotalPrice} = require('./calculateCartTotalPrice');
 
 const {statusCodes} = require('./statusCodes');
 
@@ -14,5 +15,6 @@ module.exports = {
   errorResponseWithData,
   errorResponse,
   statusCodes,
-  messages
+  messages,
+  calculateCartTotalPrice
 };

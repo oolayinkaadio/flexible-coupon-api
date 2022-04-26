@@ -7,6 +7,7 @@ const messages = {
   conflict: 'resource already exists!',
   validationError: 'validation error, check payload and try again',
   deleted: 'resource successfully deleted',
+  serverError: 'Something bad happened, try again'
 };
 
 module.exports = { messages };

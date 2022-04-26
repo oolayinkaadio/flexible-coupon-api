@@ -9,18 +9,24 @@ const productValidator = {
 
     const payload = req.body;
 
-    const schema = Joi.object().keys({
-      name: Joi.string().max(100).required(),
-      price: Joi.number().required(),
-    });
-
-    const validation = schema.validate(payload);
-
-    if (validation.error) {
-      return errorResponse(res, statusCodes.badRequest, validation.error.details[0].message);
-    };
-
-    return next();
+    if (Array.isArray(payload)) {
+      const schema = Joi.object().keys({
+        name: Joi.string().max(100).required(),
+        price: Joi.number().precision(2).required(),
+      });
+      for (let i = 0; i < payload.length; i++) {
+        const currPayload = payload[i];
+        const validation = schema.validate(currPayload);
+  
+        if (validation.error) {
+          return errorResponse(res, statusCodes.badRequest, validation.error.details[0].message);
+        };
+      };
+     
+  
+      return next();
+    }
+    return errorResponse(res, statusCodes.badRequest, messages.validationError);
   },
 
 };
