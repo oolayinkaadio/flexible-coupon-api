@@ -141,7 +141,8 @@ const cartService = {
         couponCode: coupon_code,
         cart: getCartAndItsProducts,
         cartTotalPrice,
-        cartDiscountPrice: discount
+        cartDiscountPrice: discount,
+        cartTotalAdjustedPrice: cartTotalPrice - discount,
       };
 
       return successResponseWithData(res, statusCodes.success, messages.success, returnedData);
@@ -203,7 +204,8 @@ const cartService = {
         couponCode: coupon_code,
         cart: getCartAndItsProducts,
         cartTotalPrice,
-        cartDiscountPrice: discount
+        cartDiscountPrice: discount,
+        cartTotalAdjustedPrice: cartTotalPrice - discount,
       };
 
       return successResponseWithData(res, statusCodes.success, messages.success, returnedData);
