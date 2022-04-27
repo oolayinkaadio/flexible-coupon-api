@@ -21,6 +21,10 @@ const ruleDal = {
     {transaction});
   },
 
+  getAllRules: async () => {
+    return await Rule.findAll({});
+  },
+
   getRuleByField: async (field = {}) => {
     return await Rule.findAll({ where: field });
   },
