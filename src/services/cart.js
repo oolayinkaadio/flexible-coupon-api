@@ -67,11 +67,93 @@ const cartService = {
   }
     
   },
+  getCartAndItsProductsTotalPriceProd: async (res) => {
+    try {
+      const cart_id = ''
+      const getCartAndItsProducts = await cartDal.getCartById(cart_id);
+      if (!getCartAndItsProducts) {
+        return errorResponse(res, statusCodes.badRequest, messages.badRequest);
+      };
+      
+      let totalPrice = 0;
+      if (getCartAndItsProducts && getCartAndItsProducts.products.length > 0) {
+        const { products } = getCartAndItsProducts;
+        totalPrice += calculateCartTotalPrice(products);
+      }
+  
+      const returnedData = {cart: getCartAndItsProducts, cartTotalPrice: totalPrice};
+  
+      return successResponseWithData(res, statusCodes.success, messages.success, returnedData);
+  } catch (error) {
+    throw new Error(error);
+  }
+    
+  },
 
   calculateDiscountForCart: async (data, res) => {
     // this func takes data obj that has cart id and coupon_code
     try {
       const { cart_id, coupon_code } = data;
+      const getCartAndItsProducts = await cartDal.getCartById(cart_id);
+      if (!getCartAndItsProducts) {
+        return errorResponse(res, statusCodes.badRequest, messages.badRequest);
+      }
+
+      const { products } = getCartAndItsProducts;
+      const cartProductLength = products.length;
+      const cartTotalPrice = calculateCartTotalPrice(products);
+
+      const couponCodeExists = await couponDal.getCouponByField({coupon_code});
+      if (!couponCodeExists) {
+        return errorResponse(res, statusCodes.notFound, messages.notFound);
+      };
+
+      const { rules, discounts } = couponCodeExists;
+
+      for (let i = 0; i < rules.length; i++) {
+        const currentRule = rules[i];
+        if (currentRule.minimum_cart_price && currentRule.minimum_cart_price > cartTotalPrice) {
+          return errorResponse(res, statusCodes.badRequest, messages.badRequest);
+        };
+
+        if (currentRule.minimum_cart_length && currentRule.minimum_cart_length > cartProductLength) {
+          return errorResponse(res, statusCodes.badRequest, messages.badRequest);
+        }
+      };
+
+      let discount = 0;
+      for (let i = 0; i < discounts.length; i++) {
+        const currentDiscount = discounts[i];
+        const discountValue = currentDiscount.value;
+        const percentageDiscount = (discountValue / 100) * cartTotalPrice;
+        const fixedDiscount = cartTotalPrice - discountValue;
+
+        if (currentDiscount.type === 'both') {         
+          discount += percentageDiscount > fixedDiscount ? percentageDiscount : fixedDiscount;
+        };
+
+        if (currentDiscount.type === 'fixed_price') { discount += fixedDiscount; };
+
+        if (currentDiscount.type === 'percentage') { discount += percentageDiscount; };
+      };
+
+      const returnedData = {
+        couponCode: coupon_code,
+        cart: getCartAndItsProducts,
+        cartTotalPrice,
+        cartDiscountPrice: discount
+      };
+
+      return successResponseWithData(res, statusCodes.success, messages.success, returnedData);
+        
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+  calculateDiscountForCartProd: async (res) => {
+    // this func takes data obj that has cart id and coupon_code
+    try {
+      const { cart_id, coupon_code } = {'', 'DllJ7Ia51K'};
       const getCartAndItsProducts = await cartDal.getCartById(cart_id);
       if (!getCartAndItsProducts) {
         return errorResponse(res, statusCodes.badRequest, messages.badRequest);

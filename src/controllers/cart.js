@@ -22,10 +22,27 @@ const cartController = {
     }
   },
 
+  getCartDiscountProd: async (req, res) => {
+    try {
+      return await cartService.calculateDiscountForCart(res);
+    } catch (error) {
+      return errorResponse(res, statusCodes.serverError, messages.serverError);
+    }
+  },
+
   getCartAndItsProductsTotalPrice: async (req, res) => {
     try {
       const {cartId} = req.body;
       return await cartService.getCartAndItsProductsTotalPrice(cartId, res);
+    } catch (error) {
+      return errorResponse(res, statusCodes.serverError, messages.serverError);
+    }
+  },
+
+  getCartAndItsProductsTotalPriceProd: async (req, res) => {
+    try {
+     
+      return await cartService.getCartAndItsProductsTotalPrice(res);
     } catch (error) {
       return errorResponse(res, statusCodes.serverError, messages.serverError);
     }
