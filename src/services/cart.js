@@ -69,7 +69,7 @@ const cartService = {
   },
   getCartAndItsProductsTotalPriceProd: async (res) => {
     try {
-      const cart_id = ''
+      const cart_id = '';
       const getCartAndItsProducts = await cartDal.getCartById(cart_id);
       if (!getCartAndItsProducts) {
         return errorResponse(res, statusCodes.badRequest, messages.badRequest);
@@ -153,7 +153,9 @@ const cartService = {
   calculateDiscountForCartProd: async (res) => {
     // this func takes data obj that has cart id and coupon_code
     try {
-      const { cart_id, coupon_code } = {'', 'DllJ7Ia51K'};
+      const coupon_code = 'DllJ7Ia51K';
+      const cart_id = '';
+      
       const getCartAndItsProducts = await cartDal.getCartById(cart_id);
       if (!getCartAndItsProducts) {
         return errorResponse(res, statusCodes.badRequest, messages.badRequest);
