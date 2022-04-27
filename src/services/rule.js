@@ -10,8 +10,8 @@ const ruleService = {
     try {
       const {rule} = data;
 
-      const ruleExists = await ruleDal.getRuleByField({rule});
-      if (ruleExists) {
+      const ruleExists = await ruleDal.getRuleByField({ rule });
+      if (!ruleExists || (ruleExists && ruleExists.length !== 0)) {
         return errorResponse(res, statusCodes.notFound, messages.notFound);
       };
       
@@ -20,7 +20,7 @@ const ruleService = {
         return errorResponse(res, statusCodes.badRequest, messages.badRequest);
       };
   
-      return successResponseWithData(res, statusCodes.created, messages.created, newrule);
+      return successResponseWithData(res, statusCodes.created, messages.created, newRule);
 
     } catch (error) {
       throw new Error(error);
@@ -29,7 +29,7 @@ const ruleService = {
 
   getAllRule: async (res) => {
     try {
-      const allRule = await discountDal.getAllRule();
+      const allRule = await ruleDal.getAllRules();
       if (!allRule) {
         return errorResponse(res, statusCodes.badRequest, messages.badRequest);
       }
@@ -47,7 +47,7 @@ const ruleService = {
         return errorResponse(res, statusCodes.notFound, messages.notFound);
       };
 
-      return successResponseWithData(res, statusCodes.created, messages.created, ruleExists);
+      return successResponseWithData(res, statusCodes.success, messages.success, ruleExists);
       
     } catch (error) {
       throw new Error(error);
