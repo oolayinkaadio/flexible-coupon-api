@@ -3,8 +3,10 @@ function calculateCartTotalPrice(cartProducts) {
 
   if (cartProducts && cartProducts.length > 0) {
     totalPrice = cartProducts.reduce((a, b) => {
+      console.log('QQ', a.price, b.price);
       return a.price + b.price;
     }, 0);
+    console.log(totalPrice);
   };
 
   return totalPrice;
