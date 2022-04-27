@@ -24,7 +24,7 @@ const cartController = {
 
   getCartDiscountProd: async (req, res) => {
     try {
-      return await cartService.calculateDiscountForCart(res);
+      return await cartService.calculateDiscountForCartProd(res);
     } catch (error) {
       return errorResponse(res, statusCodes.serverError, messages.serverError);
     }
@@ -42,7 +42,7 @@ const cartController = {
   getCartAndItsProductsTotalPriceProd: async (req, res) => {
     try {
      
-      return await cartService.getCartAndItsProductsTotalPrice(res);
+      return await cartService.getCartAndItsProductsTotalPriceProd(res);
     } catch (error) {
       return errorResponse(res, statusCodes.serverError, messages.serverError);
     }

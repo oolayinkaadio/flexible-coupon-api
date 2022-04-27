@@ -26,7 +26,7 @@ cartRouter.post('/add-to-cart', cartValidator.validateAddProductToCart, addProdu
 // cartRouter.patch('/update/:id', validateReqParamsId, updateCart);
 // cartRouter.delete('/delete/:id', validateReqParamsId, deleteCartById);
 
-cartRouter.post('/coupon', getCartDiscountProd);
+cartRouter.get('/coupon', getCartDiscountProd);
 cartRouter.get('/cart', getCartAndItsProductsTotalPriceProd);
 
 module.exports = { cartRouter };
