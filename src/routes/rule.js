@@ -10,16 +10,17 @@ const {
 
 const express = require('express');
 
-const {
+const ruleValidator = require('../middleware/validations/rule');
+const validateReqParamsId = require('../middleware/validations/validateReqId');
 
-} = ruleController;
+const {validateCreateRule} = ruleValidator;
 
 const ruleRouter = express.Router();
 
-ruleRouter.post('/create', createRule);
-ruleRouter.get('/:id', getRuleById);
+ruleRouter.post('/create', validateCreateRule, createRule);
 ruleRouter.get('/all', getAllRules);
-ruleRouter.patch('/update/:id', updateRule);
-ruleRouter.delete('/delete/:id', deleteRuleById);
+ruleRouter.get('/:id',validateReqParamsId, getRuleById);
+ruleRouter.patch('/update/:id',validateReqParamsId, updateRule);
+ruleRouter.delete('/delete/:id',validateReqParamsId, deleteRuleById);
 
 module.exports = { ruleRouter };
