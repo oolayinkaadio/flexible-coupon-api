@@ -162,7 +162,10 @@ const cartService = {
 
       const { products } = getCartAndItsProducts;
       const cartProductLength = products.length;
+      console.log('::::',products)
+
       const cartTotalPrice = calculateCartTotalPrice(products);
+      console.log('OOO', cartTotalPrice);
 
       const couponCodeExists = await couponDal.getCouponByField({coupon_code});
       if (!couponCodeExists) {
@@ -183,6 +186,7 @@ const cartService = {
       };
 
       let discount = 0;
+      console.log('DISCOUNT', discounts);
       for (let i = 0; i < discounts.length; i++) {
         const currentDiscount = discounts[i];
         const discountValue = currentDiscount.value;
