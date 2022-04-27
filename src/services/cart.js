@@ -155,7 +155,6 @@ const cartService = {
     try {
       const coupon_code = 'DllJ7Ia51K';
       const cart_id = '22be981c-80ff-4868-8672-25ef3b3bfca5';
-      
       const getCartAndItsProducts = await cartDal.getCartById(cart_id);
       if (!getCartAndItsProducts) {
         return errorResponse(res, statusCodes.badRequest, messages.badRequest);
