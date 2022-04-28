@@ -24,9 +24,9 @@ const cartController = {
 
   getCartAndItsProductsTotalPrice: async (req, res) => {
     try {
-      // const prodCartId = '22be981c-80ff-4868-8672-25ef3b3bfca5';
-      const localCartId = '3448f3c8-1597-4f4a-8736-4c25005bcbc9';
-      return await cartService.getCartAndItsProductsTotalPrice(localCartId, res);
+      const prodCartId = 'b6cb626d-a017-4d6b-8e03-6c73c42fc427';
+      // const localCartId = '3448f3c8-1597-4f4a-8736-4c25005bcbc9';
+      return await cartService.getCartAndItsProductsTotalPrice(prodCartId, res);
     } catch (error) {
       return errorResponse(res, statusCodes.serverError, messages.serverError);
     }
