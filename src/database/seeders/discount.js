@@ -11,7 +11,7 @@ module.exports = {
       },
       {
         id: Sequelize.literal('uuid_generate_v4()'),
-        name: 'Percent-off total price',
+        name: 'Percentage-off total price',
         type: 'percentage',
         value: 10,
         createdAt: new Date(),
@@ -19,7 +19,7 @@ module.exports = {
       },
       {
         id: Sequelize.literal('uuid_generate_v4()'),
-        name: 'Percent-off / fixed amount (use greatest value)',
+        name: 'Percentage-off / fixed amount (use greatest value)',
         type: 'both',
         value: 10,
         createdAt: new Date(),

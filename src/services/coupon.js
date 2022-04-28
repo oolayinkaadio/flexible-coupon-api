@@ -7,19 +7,16 @@ const couponService = {
   createCoupon: async (data, res) => {
     const transaction = await db.sequelize.transaction();
     try {
-      const { name } = data;
+      const { code } = data;
       
       const ruleIds = data.ruleIds ? data.ruleIds : null;
       const discountIds = data.discountIds ? data.discountIds : null;
 
-      const couponExists = await couponDal.getCouponByField({ name });
+      const couponExists = await couponDal.getCouponByField({ code });
       
       if (couponExists) {
-        return errorResponse(res, statusCodes.notFound, messages.notFound);
+        return errorResponse(res, statusCodes.conflict, messages.conflict);
       };
-  
-      const couponCode = await generateCouponCode();
-      data.coupon_code = couponCode;
      
         const newCoupon = await couponDal.createCoupon(data, transaction);
         if (!newCoupon) {
@@ -75,19 +72,6 @@ const couponService = {
       throw new Error(error);
     }  
   },
-  couponCart: async (data, res) => { 
-    // This is for '/coupon' endpoint
-    // get coupon code if it exists including its rules and wwe
-    // get cart array
-    // calculate the total price of all items in the cart
-    // get the length of items in the cart
-
-    // retrieve the coupon rules and check if the cart total price and length conforms with the coupon rules
-
-    // if it does not conform with the coupon rules, return an error message
-    // if it conforms with the coupon rules, return the cart total price, length, total discount and the discounted price
-    
-  },
 
   getAllCoupon: async (res) => {
     try {
@@ -105,6 +89,20 @@ const couponService = {
   getCouponById: async (id, res) => {
     try {
       const couponExists = await couponDal.getCouponByField({id});
+      if (!couponExists) {
+        return errorResponse(res, statusCodes.notFound, messages.notFound);
+      };
+
+      return successResponseWithData(res, statusCodes.created, messages.created, couponExists);
+      
+    } catch (error) {
+      throw new Error(error);
+    };
+  },
+
+  getCouponByField: async (field={}, res) => {
+    try {
+      const couponExists = await couponDal.getCouponByField(field);
       if (!couponExists) {
         return errorResponse(res, statusCodes.notFound, messages.notFound);
       };

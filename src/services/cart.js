@@ -57,53 +57,29 @@ const cartService = {
       if (getCartAndItsProducts && getCartAndItsProducts.products.length > 0) {
         const { products } = getCartAndItsProducts;
         totalPrice += calculateCartTotalPrice(products);
-      }
-  
-      const returnedData = {cart: getCartAndItsProducts, cartTotalPrice: totalPrice};
-  
-      return successResponseWithData(res, statusCodes.success, messages.success, returnedData);
-  } catch (error) {
-    throw new Error(error);
-  }
-    
-  },
-  getCartAndItsProductsTotalPriceProd: async (res) => {
-    try {
-      const cart_id = '22be981c-80ff-4868-8672-25ef3b3bfca5';
-      const getCartAndItsProducts = await cartDal.getCartById(cart_id);
-      if (!getCartAndItsProducts) {
-        return errorResponse(res, statusCodes.badRequest, messages.badRequest);
       };
-      
-      let totalPrice = 0;
-      if (getCartAndItsProducts && getCartAndItsProducts.products.length > 0) {
-        const { products } = getCartAndItsProducts;
-        totalPrice += calculateCartTotalPrice(products);
-      }
   
       const returnedData = {cart: getCartAndItsProducts, cartTotalPrice: totalPrice};
   
       return successResponseWithData(res, statusCodes.success, messages.success, returnedData);
-  } catch (error) {
+    } catch (error) {
     throw new Error(error);
-  }
-    
+    };    
   },
 
   calculateDiscountForCart: async (data, res) => {
-    // this func takes data obj that has cart id and coupon_code
     try {
       const { cart_id, coupon_code } = data;
       const getCartAndItsProducts = await cartDal.getCartById(cart_id);
       if (!getCartAndItsProducts) {
         return errorResponse(res, statusCodes.badRequest, messages.badRequest);
-      }
+      };
 
       const { products } = getCartAndItsProducts;
       const cartProductLength = products.length;
       const cartTotalPrice = calculateCartTotalPrice(products);
 
-      const couponCodeExists = await couponDal.getCouponByField({coupon_code});
+      const couponCodeExists = await couponDal.getCouponByField({code: coupon_code});
       if (!couponCodeExists) {
         return errorResponse(res, statusCodes.notFound, messages.notFound);
       };
@@ -113,36 +89,35 @@ const cartService = {
       for (let i = 0; i < rules.length; i++) {
         const currentRule = rules[i];
         if (currentRule.minimum_cart_price && currentRule.minimum_cart_price > cartTotalPrice) {
-          return errorResponse(res, statusCodes.badRequest, messages.badRequest);
+          return errorResponse(res, statusCodes.badRequest, messages.couponDiscountAndRuleError);
         };
 
         if (currentRule.minimum_cart_length && currentRule.minimum_cart_length > cartProductLength) {
-          return errorResponse(res, statusCodes.badRequest, messages.badRequest);
+          return errorResponse(res, statusCodes.badRequest, messages.couponDiscountAndRuleError);
         }
       };
 
       let discount = 0;
       for (let i = 0; i < discounts.length; i++) {
         const currentDiscount = discounts[i];
-        const discountValue = currentDiscount.value;
-        const percentageDiscount = (discountValue / 100) * cartTotalPrice;
+        const discountValue = parseInt(currentDiscount.value);
+        const percentageDiscount =parseInt(((discountValue / 100) * cartTotalPrice).toFixed(2));
         const fixedDiscount = cartTotalPrice - discountValue;
+        
+        if (currentDiscount.type === 'both') { discount =  discount + percentageDiscount > discountValue ? percentageDiscount : discountValue; };
 
-        if (currentDiscount.type === 'both') {         
-          discount += percentageDiscount > fixedDiscount ? percentageDiscount : fixedDiscount;
-        };
+        if (currentDiscount.type === 'fixed_price') { discount = discount + discountValue; };
 
-        if (currentDiscount.type === 'fixed_price') { discount += fixedDiscount; };
+        if (currentDiscount.type === 'percentage') { discount = discount + percentageDiscount; };
 
-        if (currentDiscount.type === 'percentage') { discount += percentageDiscount; };
       };
 
+
       const returnedData = {
-        couponCode: coupon_code,
-        cart: getCartAndItsProducts,
+        cartId: cart_id,
         cartTotalPrice,
         cartDiscountPrice: discount,
-        cartTotalAdjustedPrice: cartTotalPrice - discount,
+        cartTotalAdjustedPrice: parseInt((cartTotalPrice - discount).toFixed(2)),
       };
 
       return successResponseWithData(res, statusCodes.success, messages.success, returnedData);
@@ -151,69 +126,7 @@ const cartService = {
       throw new Error(error);
     }
   },
-  calculateDiscountForCartProd: async (res) => {
-    // this func takes data obj that has cart id and coupon_code
-    try {
-      const coupon_code = 'DllJ7Ia51K';
-      const cart_id = '22be981c-80ff-4868-8672-25ef3b3bfca5';
-      const getCartAndItsProducts = await cartDal.getCartById(cart_id);
-      if (!getCartAndItsProducts) {
-        return errorResponse(res, statusCodes.badRequest, messages.badRequest);
-      }
 
-      const { products } = getCartAndItsProducts;
-      const cartProductLength = products.length;
-
-      const cartTotalPrice = calculateCartTotalPrice(products);
-
-      const couponCodeExists = await couponDal.getCouponByField({coupon_code});
-      if (!couponCodeExists) {
-        return errorResponse(res, statusCodes.notFound, messages.notFound);
-      };
-
-      const { rules, discounts } = couponCodeExists;
-
-      for (let i = 0; i < rules.length; i++) {
-        const currentRule = rules[i];
-        if (currentRule.minimum_cart_price && currentRule.minimum_cart_price > cartTotalPrice) {
-          return errorResponse(res, statusCodes.badRequest, messages.badRequest);
-        };
-
-        if (currentRule.minimum_cart_length && currentRule.minimum_cart_length > cartProductLength) {
-          return errorResponse(res, statusCodes.badRequest, messages.badRequest);
-        }
-      };
-
-      let discount = 0;
-      for (let i = 0; i < discounts.length; i++) {
-        const currentDiscount = discounts[i];
-        const discountValue = currentDiscount.value;
-        const percentageDiscount = (discountValue / 100) * cartTotalPrice;
-        const fixedDiscount = cartTotalPrice - discountValue;
-
-        if (currentDiscount.type === 'both') {         
-          discount += percentageDiscount > fixedDiscount ? percentageDiscount : fixedDiscount;
-        };
-
-        if (currentDiscount.type === 'fixed_price') { discount += fixedDiscount; };
-
-        if (currentDiscount.type === 'percentage') { discount += percentageDiscount; };
-      };
-
-      const returnedData = {
-        couponCode: coupon_code,
-        cart: getCartAndItsProducts,
-        cartTotalPrice,
-        cartDiscountPrice: discount,
-        cartTotalAdjustedPrice: cartTotalPrice - discount,
-      };
-
-      return successResponseWithData(res, statusCodes.success, messages.success, returnedData);
-        
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
 };
 
 module.exports = {cartService};

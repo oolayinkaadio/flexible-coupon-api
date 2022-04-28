@@ -15,11 +15,13 @@ const cartProductDal = {
       include: [
         {
         model: Product,
-        as: 'products'
+          as: 'products',
+        through: {attributes: []}
         },
         {
           model: Cart,
           as: 'carts',
+        through: {attributes: []}
         }
       ]
     });
@@ -31,11 +33,13 @@ const cartProductDal = {
       include: [
         {
         model: Product,
-        as: 'products'
+        as: 'products',
+        through: {attributes: []}
         },
         {
           model: Cart,
           as: 'carts',
+          through: {attributes: []}
         }
       ]
     });

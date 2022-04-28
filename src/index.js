@@ -1,5 +1,5 @@
 const express = require('express');
-// const logger = require('morgan');
+const logger = require('morgan');
 
 const router = require('./routes/index');
 const { errorResponse, statusCodes, successResponse, messages } = require('./utils');
@@ -8,7 +8,7 @@ const app = express();
 
 app.use(express.json());
 
-// app.use(logger('dev'));
+app.use(logger('dev'));
 
 const port = process.env.PORT || 4200;
 

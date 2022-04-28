@@ -14,13 +14,10 @@ module.exports = {
         allowNull: false,
         autoIncrement: true
       },
-      name: {
+      code: {
         type: Sequelize.STRING,
-        allowNull: false
-      },
-      coupon_code: {
-        type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false, 
+        unique: true
       },
       createdAt: {
         allowNull: false,

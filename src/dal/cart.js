@@ -15,7 +15,7 @@ const cartDal = {
       include: [{
         model: Product,
         as: 'products',
-        through: CartProduct
+        through: {attributes: []}
       }]
     });
   },

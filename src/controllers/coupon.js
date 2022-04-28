@@ -7,7 +7,8 @@ const {
   getAllCoupon,
   getCouponById,
   updateCoupon,
-  deleteCouponById
+  deleteCouponById,
+  getCouponByField,
 } = couponService;
 
 const couponController = {
@@ -33,6 +34,15 @@ const couponController = {
     try {
       const { id } = req.params;
       return await getCouponById(id, res);
+    } catch (error) {
+      return errorResponse(res, statusCodes.serverError, error.message);
+    }
+  },
+
+  getCouponByCode: async (req, res) => {
+    try {
+      const { code } = req.params;
+      return await getCouponByField({code}, res);
     } catch (error) {
       return errorResponse(res, statusCodes.serverError, error.message);
     }

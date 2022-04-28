@@ -7,7 +7,8 @@ const messages = {
   conflict: 'resource already exists!',
   validationError: 'validation error, check payload and try again',
   deleted: 'resource successfully deleted',
-  serverError: 'Something bad happened, try again'
+  serverError: 'Something bad happened, try again',
+  couponDiscountAndRuleError: 'Cart total price or number of cart items not valid for this coupon',
 };
 
 module.exports = { messages };

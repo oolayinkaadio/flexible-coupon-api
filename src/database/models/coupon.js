@@ -35,13 +35,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       autoIncrement: true
     },
-    name: {
+    code: {
       type: DataTypes.STRING,
-      allowNull: false
-    },
-    coupon_code: {
-      type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
   }, {
     sequelize,

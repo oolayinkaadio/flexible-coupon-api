@@ -10,7 +10,7 @@ const couponValidator = {
     const payload = req.body;
 
     const schema = Joi.object().keys({
-      name: Joi.string().max(100).required(),
+      code: Joi.string().max(100).required(),
       ruleIds: Joi.array().items(Joi.string().guid({ version: ['uuidv4', 'uuidv5'] }).required()).required(),
       discountIds: Joi.array().items(Joi.string().guid({ version: ['uuidv4', 'uuidv5'] }).required()).required(),
     });

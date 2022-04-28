@@ -12,17 +12,18 @@ const couponDal = {
   getCouponWithItsRulesAndDiscount: async (coupon_id) => {
     return await Coupon.findOne({
       where: { id: coupon_id },
-      attributes: ['id'],
       include: [
         {
           model: Rule,
           as: 'rules',
+          through: {attributes: []}
         },
         {
           model: Discount,
           as: 'discounts',
-        }
-      ]
+          through: {attributes: []}
+        },
+      ],
     });
   },
 
